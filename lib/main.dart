@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:moon_calendar/home_page.dart';
+import 'package:moon_calendar/service/moon.dart';
+import 'package:moon_calendar/service/weather.dart';
+import 'package:moon_calendar/sign_in.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,17 +10,21 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Moon calendar',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => MoonPhaseService()),
+        ChangeNotifierProvider(create: (context) => WeatherService()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Moon calendar',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const Signin(),
       ),
-      home: const HomePage(),
     );
   }
 }
