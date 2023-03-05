@@ -12,8 +12,9 @@ import 'json_serialization.dart';
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
-  late String _moonName;
-  late String _moonPhase;
+  String _moonName = '';
+  String _moonPhase = '';
+
   @override
   Widget build(BuildContext context) {
     int todayDate = DateTime.now().day;
