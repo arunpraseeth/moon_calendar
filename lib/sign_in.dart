@@ -77,26 +77,21 @@ class _SigninState extends State<Signin> {
     required TextEditingController userId,
     required TextEditingController password,
   }) {
-    localPosition(
-      context: context,
-      userId: userId,
-      password: password,
-    );
-    // String id1 = "harsha123";
-    // String password1 = "harsha1234";
-    // String id2 = "hinduja123";
-    // String password2 = "hinduja1234";
-    // String id3 = "erin123";
-    // String password3 = "erin1234";
-    // if (userId.text == id1 && password.text == password1 ||
-    //     userId.text == id2 && password.text == password2 ||
-    //     userId.text == id3 && password.text == password3) {
-    //   localPosition(
-    //     context: context,
-    //     userId: userId,
-    //     password: password,
-    //   );
-    // }
+    String id1 = "harsha123";
+    String password1 = "harsha1234";
+    String id2 = "hinduja123";
+    String password2 = "hinduja1234";
+    String id3 = "erin123";
+    String password3 = "erin1234";
+    if (userId.text == id1 && password.text == password1 ||
+        userId.text == id2 && password.text == password2 ||
+        userId.text == id3 && password.text == password3) {
+      localPosition(
+        context: context,
+        userId: userId,
+        password: password,
+      );
+    }
   }
 
 // ! Future Update - dynamically change lat ang long.
