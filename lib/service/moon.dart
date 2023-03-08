@@ -17,6 +17,6 @@ class MoonPhaseService with ChangeNotifier {
       return throw e;
     }
   }
-
+ 
   List<MoonPhaseSerialization> get moonPhaseData => _serialization;
 }

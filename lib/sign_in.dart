@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:moon_calendar/home_page.dart';
+import 'package:moon_calendar/bottom_navbar.dart';
 import 'package:moon_calendar/loader.dart';
 import 'package:moon_calendar/service/moon.dart';
 import 'package:moon_calendar/service/weather.dart';
@@ -139,7 +139,7 @@ class _SigninState extends State<Signin> {
                 (value) => Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePage(),
+                    builder: (context) => CustomBottomNavBar(),
                   ),
                   (route) => false,
                 ),
@@ -169,7 +169,7 @@ class _SigninState extends State<Signin> {
               (value) => Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HomePage(),
+                  builder: (context) => CustomBottomNavBar(),
                 ),
                 (route) => false,
               ),

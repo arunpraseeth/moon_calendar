@@ -6,7 +6,6 @@ import 'package:moon_calendar/service/weather.dart';
 import 'package:moon_calendar/weather_serialization.dart';
 import 'package:moon_phase/moon_widget.dart';
 import 'package:provider/provider.dart';
-
 import 'json_serialization.dart';
 
 // ignore: must_be_immutable
