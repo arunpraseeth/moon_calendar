@@ -9,10 +9,29 @@ import 'package:provider/provider.dart';
 import 'json_serialization.dart';
 
 // ignore: must_be_immutable
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   String _moonName = '';
   String _moonPhase = '';
+  bool isToggleOn = false;
+  final List<bool> _selectedlanguage = <bool>[true, false];
+  String selectedlanguage = 'EN';
+  List<Widget> language = <Widget>[
+    Text(
+      'EN',
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ),
+    Text(
+      'KH',
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +63,39 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 30),
-            // Center(
-            //   child: Text(
-            //     "Wenhnitaronnyon Moon Calendar",
-            //     style: TextStyle(
-            //       fontSize: 22,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
-            // const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, right: 20),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: ToggleButtons(
+                  onPressed: (int index) {
+                    setState(() {
+                      for (int i = 0; i < _selectedlanguage.length; i++) {
+                        _selectedlanguage[i] = i == index;
+                        if (index == 0) {
+                          selectedlanguage = "EN";
+                        } else {
+                          selectedlanguage = "KH";
+                        }
+                      }
+                    });
+                  },
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  borderColor: Colors.blueGrey,
+                  selectedBorderColor: Colors.blueGrey,
+                  selectedColor: Colors.white,
+                  fillColor: Colors.blueGrey,
+                  // color: Colors.blueGrey,
+                  constraints: const BoxConstraints(
+                    minHeight: 40.0,
+                    minWidth: 50.0,
+                  ),
+                  isSelected: _selectedlanguage,
+                  children: language,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             Center(
               child: Stack(
                 children: [
@@ -427,7 +468,7 @@ class HomePage extends StatelessWidget {
                   color: secondaryColor,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
+                      horizontal: 15,
                       vertical: 15,
                     ),
                     child: Row(
@@ -438,15 +479,17 @@ class HomePage extends StatelessWidget {
                           "Moon Name:",
                           style: TextStyle(
                             color: Colors.white38,
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "  $_moonName",
+                          selectedlanguage == "EN"
+                              ? "  $_moonName"
+                              : " ${translateMoonName(moonName: _moonName)}",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -464,7 +507,7 @@ class HomePage extends StatelessWidget {
                 color: secondaryColor,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
+                    horizontal: 15,
                     vertical: 12,
                   ),
                   child: Row(
@@ -475,7 +518,7 @@ class HomePage extends StatelessWidget {
                         "Moon Phase:",
                         style: TextStyle(
                           color: Colors.white38,
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -483,7 +526,7 @@ class HomePage extends StatelessWidget {
                         "  $_moonPhase",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -511,7 +554,7 @@ class HomePage extends StatelessWidget {
                       width: 180,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
+                          horizontal: 15,
                           vertical: 15,
                         ),
                         child: Row(
@@ -522,7 +565,7 @@ class HomePage extends StatelessWidget {
                               "Date:",
                               style: TextStyle(
                                 color: Colors.white38,
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -530,7 +573,7 @@ class HomePage extends StatelessWidget {
                               "  ${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -546,7 +589,7 @@ class HomePage extends StatelessWidget {
                       // width: 180,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
+                          horizontal: 15,
                           vertical: 15,
                         ),
                         child: Row(
@@ -557,7 +600,7 @@ class HomePage extends StatelessWidget {
                               "Temp:",
                               style: TextStyle(
                                 color: Colors.white38,
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -565,7 +608,7 @@ class HomePage extends StatelessWidget {
                               "  ${degree.round()} °C",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -581,5 +624,37 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String translateMoonName({required String moonName}) {
+    if (moonName == "Mid Winter Moon") {
+      return "Sha'tekohserl':hen Wenhni':tare";
+    } else if (moonName == "Great Snow Moon") {
+      return "Wate'kerokwasko':wa Wenhni':tare";
+    } else if (moonName == "Sugar/Maple Moon") {
+      return "Otsikh':ta/ Wa'hta Wenhni':tare";
+    } else if (moonName == "Thunder Moon") {
+      return "Ratiwe':ras Wenhni':tare";
+    } else if (moonName == "Planting Moon") {
+      return "Tewaye'nthos Wenhni':tare";
+    } else if (moonName == "Strawberry Moon") {
+      return "Ken'niyohonteh'sha Wenhni':tare";
+    } else if (moonName == "Green Beans Moon") {
+      return "Orho'tsheri Wenhni':tare";
+    } else if (moonName == "Green Corn Moon") {
+      return "Okahsero':ta Wenhni':tare";
+    } else if (moonName == "Hunter's/Harvest Moon") {
+      return "Yeyentho'kwas Wenhni':tare";
+    } else if (moonName == "Food Storing Moon") {
+      return "Yonte'khwayens Wenhni':tare";
+    } else if (moonName == "Hunting Moon") {
+      return "Ronto':rats Wenhni':tare";
+    } else if (moonName == "Long Nights Moon") {
+      return "Wahsonte:sons Wenhni':tare";
+    } else if (moonName == "Resting Moon") {
+      return "Watori'hshens Wenhni':tare";
+    } else {
+      return "Name not available";
+    }
   }
 }

@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:moon_calendar/bottom_navbar.dart';
+import 'package:moon_calendar/constants.dart';
 import 'package:moon_calendar/loader.dart';
 import 'package:moon_calendar/service/moon.dart';
 import 'package:moon_calendar/service/weather.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class Signin extends StatefulWidget {
@@ -33,40 +37,46 @@ class _SigninState extends State<Signin> {
       ),
       body: _loader
           ? LoaderWidget()
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 30),
-                  TextFormField(
-                    decoration: InputDecoration(hintText: "User Id"),
-                    controller: userId,
-                  ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    controller: password,
-                    decoration: InputDecoration(hintText: "Password"),
-                  ),
-                  SizedBox(height: 20),
-                  TextButton(
-                    onPressed: () {
-                      login(
-                        context,
-                        userId: userId,
-                        password: password,
-                      );
-                    },
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    Image.asset(
+                      "assets/turtle.png",
+                      height: 250,
+                    ),
+                    const SizedBox(height: 30),
+                    TextFormField(
+                      decoration: InputDecoration(hintText: "User Id"),
+                      controller: userId,
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: password,
+                      decoration: InputDecoration(hintText: "Password"),
+                    ),
+                    SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () {
+                        login(
+                          context,
+                          userId: userId,
+                          password: password,
+                        );
+                      },
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
     );
@@ -106,9 +116,7 @@ class _SigninState extends State<Signin> {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
+      showAlertDialog(context, "Location services");
       return Future.error('Location services are disabled.');
     }
 
@@ -116,11 +124,7 @@ class _SigninState extends State<Signin> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
+        showAlertDialog(context, "Location ${permission.name}");
         return Future.error('Location permissions are denied');
       } else {
         setState(() {
@@ -178,7 +182,7 @@ class _SigninState extends State<Signin> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
+      showAlertDialog(context, "Location ${permission.name}");
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
@@ -186,5 +190,44 @@ class _SigninState extends State<Signin> {
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
+  }
+
+  Future showAlertDialog(BuildContext context, String permissionFor) async {
+    if (Platform.isAndroid) {
+      Widget cancelButton = TextButton(
+        child: const Text(
+          "Cancel",
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.black,
+          ),
+        ),
+        onPressed: () => Navigator.pop(context),
+      );
+      Widget logoutButton = TextButton(
+        child: const Text(
+          "Enable",
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.red,
+          ),
+        ),
+        onPressed: () => openAppSettings(),
+      );
+
+      AlertDialog alert = AlertDialog(
+        content: Text("Enable $permissionFor permission."),
+        actions: [
+          cancelButton,
+          logoutButton,
+        ],
+      );
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
   }
 }
